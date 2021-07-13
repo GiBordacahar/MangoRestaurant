@@ -36,7 +36,7 @@ namespace Mango.services.ProductAPI.Controllers
             return response;
         }
         [HttpGet]
-        [Route("{{id}}")]
+        [Route("{id}")]
         public async Task<ResponseDto> Get(int id)
         {
             try
@@ -84,6 +84,7 @@ namespace Mango.services.ProductAPI.Controllers
         }
 
         [HttpDelete]
+        [Route("{id}")]
         public async Task<object> Delete(int id)
         {
             try
