@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -36,6 +37,12 @@ namespace Mango.web.Services
                     message.Content = new StringContent(JsonConvert.SerializeObject(request.Data), 
                         Encoding.UTF8, "application/json");
                 }
+
+                if (!string.IsNullOrEmpty(request.AccessToken))
+                {
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", request.AccessToken);
+                }
+
                 HttpResponseMessage apiResponse = null;
                 switch(request.ApyType)
                 {
