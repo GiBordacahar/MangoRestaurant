@@ -20,6 +20,20 @@ namespace Mango.services.ShoppingCartAPI.Repository
             this.db = db;
             this.mapper = mapper;
         }
+
+        public async Task<bool> ApplyCoupon(string userId, string couponCode)
+        {
+            var cartHeaderInDb = await db.CartHeaders.AsNoTracking().FirstOrDefaultAsync(u => u.UserId == userId);
+            if (cartHeaderInDb != null)
+            {
+                cartHeaderInDb.CouponCode = couponCode;
+                db.CartHeaders.Update(cartHeaderInDb);
+                await db.SaveChangesAsync();
+                return true;
+            }
+            return false;
+        }
+
         public async Task<bool> ClearCart(string userId)
         {
             var cartHeaderInDb = await db.CartHeaders.AsNoTracking().FirstOrDefaultAsync(u => u.UserId == userId);
@@ -94,6 +108,19 @@ namespace Mango.services.ShoppingCartAPI.Repository
             };
             cart.CartDetails = db.CartDetails.Where(u => u.CartHeaderId == cart.CartHeader.CartHeaderId).Include(p => p.Product);
             return mapper.Map<CartDto>(cart);
+        }
+
+        public async Task<bool> RemoveCoupon(string userId)
+        {
+            var cartHeaderInDb = await db.CartHeaders.AsNoTracking().FirstOrDefaultAsync(u => u.UserId == userId);
+            if (cartHeaderInDb != null)
+            {
+                cartHeaderInDb.CouponCode = "";
+                db.CartHeaders.Update(cartHeaderInDb);
+                await db.SaveChangesAsync();
+                return true;
+            }
+            return false;
         }
 
         public async Task<bool> RemoveFromCart(int cartDetailsId)
